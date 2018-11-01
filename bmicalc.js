@@ -1,7 +1,7 @@
 function calcBMI(height, weight) // in m, kgs
 {
 
-	return (100 * weight / (height * height)).toPrecision(4);
+	return (weight / (height * height)).toPrecision(4);
 }
 
 function calcNewBMI(height, weight)
@@ -13,10 +13,12 @@ function convertHeight(height, units)
 {
 	if (units === "in")
 	{
-		height = height * 2.54;
+		height = height * 0.0254;
+	} else {
+		height = height / 10;
 	}
 
-	return height / 10;
+	return height;
 }
 
 
@@ -88,6 +90,19 @@ function initBMI()
 	$('#submit').click(showResult)
 }
 
+function calcBMICat(bmi, whichBMI) {
+	var cat = '';
+	if (bmi < 18.5)
+		cat = 'Underweight';
+	else if (bmi < 25)
+		cat = "Normal Weight";
+	else if (bmi < 30)
+		cat = "Overweight";
+	else
+		cat = "Obese";
+	$('#bmi' + whichBMI + 'Cat').html(cat);
+}
+
 myStorage = window.localStorage;
 
 function showResult()
@@ -105,11 +120,13 @@ function showResult()
 		height = convertHeight(height, heightUnit);
 
 		var bmiOld = calcBMI(height, weight);
-		var bmiNew = calcBMI(height, weight);
+		var bmiNew = calcNewBMI(height, weight);
 
 		$('#resultsArea').css('display', 'inline');
 		$('#bmiOld').html(bmiOld);
 		$('#bmiNew').html(bmiNew);
+		calcBMICat(bmiOld, 'Old');
+		calcBMICat(bmiNew, 'New');
 
 		var age = $('#age').val();
 		var gender = $('input[type=radio][name=whichGender]:checked').val();
